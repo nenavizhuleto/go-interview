@@ -1,0 +1,26 @@
+version: "3.9"
+services:
+  helpdesk:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      DBPATH: "/opt/helpdesk/app.db"
+      MEGAPLAN_URL: "http://example.com"
+      MEGAPLAN_USER: "helpdesk@bot"
+      MEGAPLAN_PASSWORD: "example"
+      MEGAPLAN_RESPONSIBLE: 1000039
+      MONGODB: "mongodb://root:mongo_password@mongo:27017"
+      TELEGRAM_TOKEN: "TOKEN"
+    volumes:
+      - type: bind
+        source: ./app.db
+        target: /opt/helpdesk/app.db
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: mongo_password
