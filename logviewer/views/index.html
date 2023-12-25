@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Log Viewer</title>
+	<script src="https://unpkg.com/htmx.org@1.9.6"></script>
+	<script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="p-4 bg-slate-950 text-white h-screen overflow-hidden">
+	<h1 class="text-xl">Log viewer</h1>
+	<input class="text-black" type="search" name="search" placeholder="Begin Typing To Search Users..."
+		hx-post="/search" hx-trigger="keyup changed delay:500ms, search" hx-target="#list">
+	<ul class="mt-4" hx-target="#content" id="list">
+		{{ range .Dirs }}
+		<li class="p-4 cursor-pointer hover:bg-slate-800" hx-post="/content/{{ . }}">{{ . }}</li>
+		{{ end }}
+	</ul>
+	<div id="search-results">
+
+	</div>
+	<pre class="m-4 px-4 h-full bg-gray-800 overflow-y-scroll" id="content">
+
+	</pre>
+</body>
+
+</html>

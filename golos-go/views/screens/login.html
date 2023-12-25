@@ -1,0 +1,79 @@
+<div>
+  <div>
+    <div>
+          <form id="login-form">
+          <div>
+            <h6>Система &laquo;Голос&raquo; &mdash; авторизация</h6>
+          </div>
+          <div>
+              <input id="login" type="text">
+              <input id="password" type="password">
+                  <label id="info-label"></label>
+          </div>
+          <div>
+            <button id="login-button" type="submit" disabled>Вход</button>
+          </div>
+          </form>
+    </div>
+  </div>
+</div>
+    <script>
+    	function validateInput() {
+    		var login = $('#login').val().trim();
+    		var password = $('#password').val().trim();
+
+    		var ok = true;
+    		if (!login.length)
+    			ok = false;
+
+    		if (!password.length)
+    			ok = false;
+
+    		if (!ok)
+    			$('#login-button').prop('disabled', true);
+    		else
+    			$('#login-button').prop('disabled', false);
+    	}
+
+    	function loginButtonOnClick() {
+    		var login = $('#login').val().trim();
+    		var password = $('#password').val().trim();
+
+    		var ok = true;
+    		if (!login.length)
+    			ok = false;
+
+    		if (!password.length)
+    			ok = false;
+
+    		if (!ok)
+	    		return;
+
+	    	$.post('/users/login/', {
+	    		'login': login,
+	    		'password': password
+	    	}, (data) => {
+	    		if (data.result)
+		    		window.location.reload();
+	    		else
+			    	$('#info-label').html('Неверный логин или пароль.');
+	    	},'json').fail(() => {
+		    	$('#info-label').html('Ошибка соединения.');
+	    	});
+
+	    	return;
+    	}
+
+    	$('#login').on('input', function() {
+    		validateInput();
+    	}).focus();
+
+    	$('#password').on('input', function() {
+    		validateInput();
+    	});
+
+    	$('#login-form').on('submit', function() {
+    		loginButtonOnClick();
+    		return false;
+    	});
+    </script>

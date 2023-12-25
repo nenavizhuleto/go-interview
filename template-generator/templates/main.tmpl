@@ -1,0 +1,42 @@
+
+
+{{ block "main" . }}
+{{ template "licenseHeader" .Header }}
+{{ template "featureHeader" .FeatureHeader }}
+{{ range .Features }}
+{{ template "feature" . }}
+{{ end }}
+{{ end }}
+
+{{ block "licenseHeader" . }}
+Example Technologies Co., Ltd.
+All rights reserved.
+
+LicenseSerialNo={{ .SerialNo }}
+Creator={{ .Creator }}
+CreatedTime={{ .CreatedTime }}
+Country={{ .Country }}
+Custom={{ .Custom }}
+Office={{ .Office }}
+Sign= {{ .Sign }}
+{{ end }}
+
+{{ block "featureHeader" . }}
+Product={{ .Product }}
+Feature={{ .Feature }}
+Esn="{{ .Esn }}"
+Attrib="{{ .Attrib }}"
+Version={{ .Version }}
+Libver={{ .Libver }}
+Sign= {{ .Sign }}
+{{ end }}
+
+{{ block "feature" . }}
+Product={{ .Product }}
+Feature={{ .Feature }}
+Esn="{{ .Esn }}"
+Attrib="{{ .Attrib }}"
+Function="{{ .Function }}"
+Comment="{{ .Comment }}"
+Sign= {{ .Sign }}
+{{ end }}

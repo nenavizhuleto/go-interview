@@ -1,0 +1,186 @@
+<div id="buildings-building-form">
+  <div>
+    <div>
+      <div>
+        <h5></h5>
+        <button type="button"></button>
+      </div>
+      <div>
+      	<form>
+					<div>
+					  <div>
+					  	<label>Улица</label>
+					  </div>
+					  <div>
+							<select id="buildings-building-form-street_id"></select>      	
+					  </div>
+					</div>
+					<div>
+					  <div>
+					    <label>Номер</label>
+					  </div>
+					  <div>
+					    <input id="buildings-building-form-num" type="text">
+					  </div>
+					</div>
+				</form>
+      </div>
+      <div>
+        <button id="buildings-building-form-save" type="button">Сохранить</button>
+        <button id="buildings-building-form-cancel" type="button">Отмена</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+	function buildingsBuildingFormGetStreets(street_id = null, callback = null) {
+		$('#buildings-building-form-street_id')
+			.prop('disabled', true)
+			.html('<option value="0">- выберите улицу -</option>')
+			.val(0)
+			.trigger('input');
+
+		$.get('/streets/', {
+		}, (data) => {
+			let html = '';
+			for (let i in data.rows) {
+				html += '<option value="' + data.rows[i].id + '">' + data.rows[i].title + '</option>';
+			}
+
+			let el = $('#buildings-building-form-street_id');
+			el.append(html);
+
+			if (street_id)
+				el.val(street_id);
+
+			el.prop('disabled', false);
+
+			if (callback instanceof Function)
+				callback();
+		}, 'json');
+	}
+
+	function buildingsBuildingFormReset(callback = null) {
+		$('#buildings-building-form').data('id', null);
+
+		buildingsBuildingFormGetStreets(null, callback);
+	}
+
+	function buildingsBuildingFormLoad(id, callback = null) {
+		$('#buildings-building-form').data('id', id);
+
+		$.get('/buildings/', {
+			id: id
+		}, (data) => {
+			if (!data.result)
+				return;
+
+			if (!data.rows.length)
+				return;
+
+			//
+			let row = data.rows[0];
+		
+			buildingsBuildingFormGetStreets(row.street_id, () => {
+				$('#buildings-building-form-num')
+					.val(row.num)
+					.prop('disabled', false);
+
+				if (callback instanceof Function)
+					callback();
+			});
+		}, 'json');
+	}
+
+	function buildingsBuildingFormCreate() {
+		$('#buildings-building-form .modal-title').html('Новый дом');
+
+		buildingsBuildingFormReset(() => {
+			buildingsBuildingForm.show();
+		});
+	}
+
+	function buildingsBuildingFormEdit(id) {
+		$('#buildings-building-form .modal-title').html('Дом #' + id);
+
+		buildingsBuildingFormLoad(id, () => {
+			buildingsBuildingForm.show();
+		});
+	}
+
+	function buildingsBuildingFormValidate() {
+		let num = parseInt($('#buildings-building-form-num').val());
+		let ok = true;
+
+		if (!num || num <= 0)
+			ok = false;
+
+		$('#buildings-building-form-save').prop('disabled', !ok);
+	}
+
+	var buildingsBuildingForm = null;
+
+	// DOMContentLoaded
+	window.addEventListener('DOMContentLoaded', (event) => {
+		buildingsBuildingForm = new bootstrap.Modal('#buildings-building-form', {});
+
+		$('#buildings-building-form-street_id').on('input', function() {
+			let street_id = parseInt($(this).val());
+			if (!street_id) {
+				$('#buildings-building-form-num')
+					.prop('disabled', true)
+					.val('')
+					.trigger('input');
+
+				return;
+			}
+
+			$('#buildings-building-form-num')
+				.val('')
+				.prop('disabled', false)
+				.trigger('input');
+		});
+
+		$('#buildings-building-form-num').on('input', function() {
+			buildingsBuildingFormValidate();
+		});
+		
+		$('#buildings-building-form-save').on('click', function() {
+			let id = parseInt($('#buildings-building-form').data('id'));
+			let street_id = parseInt($('#buildings-building-form-street_id').val());
+			let num = parseInt($('#buildings-building-form-num').val());
+
+			$('#buildings-building-form-street_id').prop('disabled', true);
+			$('#buildings-building-form-num').prop('disabled', true);
+			$('#buildings-building-form-save').prop('disabled', true);
+			$('#buildings-building-form-cancel').prop('disabled', true);
+
+			let data = {
+				street_id: street_id,
+				num: num
+			};
+
+			if (id)
+				data.id = id;
+
+			$.post('/buildings/save/', data, (data) => {
+				if (!data.result) {
+					if (Object.hasOwn(data, 'message'))
+						new XuToast(toastContainer, { classes: ['text-bg-danger'], text: data.message, timeout: 8000 });
+
+					return;
+				}
+
+				if (Object.hasOwn(data, 'message'))
+					new XuToast(toastContainer, { classes: ['text-bg-success'], text: data.message });
+
+				buildingsTable.reloadData();
+			}, 'json').always(() => {
+				$('#buildings-building-form-cancel').prop('disabled', false);
+
+				buildingsBuildingForm.hide();
+			});
+		});
+	});
+</script>

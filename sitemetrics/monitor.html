@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title></title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="css/style.css" rel="stylesheet">
+        <script src="https://unpkg.com/htmx.org@1.9.6"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="http://127.0.0.1:3000/cdn">
+        </script>
+        <style>
+li {
+    cursor: pointer;
+}
+        </style>
+    </head>
+    <body>
+        <ul hx-target="#page">
+            <li hx-get="/monitor/statistics">Statistics</li>
+            <li hx-get="/monitor/metrics">Metrics</li>
+        </ul>
+        <div id="page" hx-get="/monitor/statistics" hx-trigger="load">
+            
+        </div>
+    </body>
+</html>

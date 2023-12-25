@@ -1,0 +1,27 @@
+<html>
+
+<head>
+	<title>Finance</title>
+	<script src="https://unpkg.com/htmx.org@1.9.9"
+		integrity="sha384-QFjmbokDn2DjBjq+fM+8LUIVrAgqcNW2s0PjAxHETgRn9l4fvX31ZxDxvwQnyMOX"
+		crossorigin="anonymous"></script>
+</head>
+
+<body hx-boost="true">
+	<h1>Hello world</h1>
+	<h2>Account</h2>
+	<p>ID: {{ .ID }}</p>
+	<p>Name: {{ .Name }}</p>
+	{{ block "balance" . }}
+	<p id="balance">Balance: {{ .Balance }}</p>
+	{{ end }}
+	{{ block "income-form" . }}
+	<form hx-post="/transaction/{{ .Name }}" hx-target="#balance">
+		<input name="value" type="text" />
+		<button type="submit">Add Value</button>
+	</form>
+	{{ end }}
+
+</body>
+
+</html>

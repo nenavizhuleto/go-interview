@@ -1,0 +1,11 @@
+<h2>Metrics:</h2>
+<ul>
+{{ range . }}
+<li>
+    <h3>TO: {{ .Site }}</h3>
+    <p>FROM: {{ .Address }}</p>
+    <p>TIME: {{ .Timestamp }}</p>
+</li>
+
+{{ end }}
+</ul>

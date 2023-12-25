@@ -1,0 +1,3 @@
+{{ range $key, $value := . }}
+<li class="p-4 cursor-pointer hover:bg-slate-800" hx-post="/content/{{ $key }}">{{ $key }} - {{ $value }}</li>
+{{ end }}

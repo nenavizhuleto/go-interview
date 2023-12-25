@@ -1,0 +1,25 @@
+<html>
+
+<head>
+	<title>Wisk</title>
+	<script src="https://unpkg.com/htmx.org@1.9.8"
+		integrity="sha384-rgjA7mptc2ETQqXoYC3/zJvkU7K/aP44Y+z7xQuJiVnB/422P/Ak+F/AqFR7E4Wr"
+		crossorigin="anonymous"></script>
+</head>
+
+<body>
+	<h1>Wisk</h1>
+	<form hx-post="/exec" hx-boost="true" hx-target="#output">
+		<input type="text" name="input" />
+		<button hx-trigger="click">execute</button>
+	</form>
+	{{ block "output" . }}
+	<pre id="output">{{ string .Output }}</pre>
+	{{ end }}
+</body>
+
+</html>
+
+{{ template "listen" . }}
+	<pre id="output" hx-trigger="every 1s" hx-get="/listen/{{ . }}">{{ string .Output }}</pre>
+{{ end }}

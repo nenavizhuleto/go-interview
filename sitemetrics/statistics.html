@@ -1,0 +1,25 @@
+<h2>Stats:</h2>
+<div>
+  <canvas id="statChart"></canvas>
+</div>
+
+<script>
+  new Chart(document.getElementById('statChart'), {
+    type: 'bar',
+    data: {
+        labels: [{{ range . }} '{{ .Site }}', {{ end }}],
+      datasets: [{
+        label: '# of visits',
+          data: [{{ range . }} {{ .Visits }}, {{ end }}],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>
